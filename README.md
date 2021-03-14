@@ -1,6 +1,12 @@
 # checker-train-template
 Template repository for university class on writing A/D CTF checkers
 
+## For the class
+- Fork a repo
+- Add a checker in any preferred language
+- Fix `run.sh` to call your checker
+- Changes will be pulled to the checksystem and run in the next  round
+
 ## Checker API
 Checker is an app that checks whether the team's task is running normally, puts flags and then checks them after a few rounds.
 
