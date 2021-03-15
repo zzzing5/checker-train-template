@@ -19,7 +19,7 @@ TRACE = os.getenv("TRACE", False)
 
 def check(host):
     try:
-        r = requests.get(f'http://{host}:8080/', timeout = 5)
+        r = requests.get(f'http://{host}:8080/')
     except:
         die(ExitStatus.DOWN,"DOWN")
     t = r.status_code
