@@ -43,8 +43,8 @@ def put(host, flag_id, flag, vuln):
     except:
         die(ExitStatus.DOWN,"DOWN")
     t = s.post(f'http://{host}:8080/auth', {
-     'username': login,
-     'password': password,
+    'username': login,
+    'password': password,
 })
     #_log(t.text)
     r = s.post(f'http://{host}:8080/addRecipe', {
