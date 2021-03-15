@@ -1,33 +1,76 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import inspect
+import uuid
+import requests
 import os
 import sys
 from enum import Enum
 
 """ <config> """
 # SERVICE INFO
-PORT = 8084
+PORT = 8080
 
 # DEBUG -- logs to stderr, TRACE -- verbose log
-DEBUG = os.getenv("DEBUG", False)
+DEBUG = os.getenv("DEBUG", True)
 TRACE = os.getenv("TRACE", False)
 """ </config> """
 
 
 def check(host):
-    die(ExitStatus.CHECKER_ERROR, "Not implemented")
+    try:
+        r = requests.get(host)
+    except:
+        die(ExitStatus.DOWN,"DOWN")
+    #print("************ r = ", r)
+    t = r.status_code
+    _log(t)
+    if t == 200:
+        die(ExitStatus.OK, "OK")
+    else:
+        die(ExitStatus.MUMBLE, "MUMBLE")
 
 
 def put(host, flag_id, flag, vuln):
-    die(ExitStatus.CHECKER_ERROR, "Not implemented")
+    login = uuid.uuid4()
+    password = "12345"
+    s = requests.Session()
+    r = s.post(f'http://{host}:8080/signup', {
+     'username': login,
+     'password': password,
+})
+    _log(r.text)
+    r = s.post(f'http://{host}:8080/auth', {
+     'username': login,
+     'password': password,
+})
+    _log(r.text)
+    r = s.post(f'http://{host}:8080/addRecipe', {
+    'recipe': flag,
+    })
+    _log(r.text)
+    if flag not in r.text:
+        die(ExitStatus.MUMBLE, "MUMBLE: Не нашел флаг после сохранения")
+    print(f'{login}:{password}')
+    die(ExitStatus.OK, "OK")
 
 
 def get(host, flag_id, flag, vuln):
-    die(ExitStatus.CHECKER_ERROR, "Not implemented")
+    s = requests.Session()
+    username, password = flag_id.split(":")
+    r = s.post(f'http://{host}:8080/auth', {
+     'username': username,
+     'password': password,
+})
+    _log(r.text)
+    r = s.get(f'http://{host}:8080/recipes')
+    _log(r.text)
+    if flag not in r.text:
+        die(ExitStatus.CORRUPT, "CORRUPT: Нет флага в рецептах")
+    else:
+        die(ExitStatus.OK, "OK")
 
-
-""" <common> """
+#""" <common> """
 
 
 class ExitStatus(Enum):
@@ -52,6 +95,7 @@ def die(code: ExitStatus, msg: str):
 
 
 def _main():
+    
     action, *args = sys.argv[1:]
 
     try:
