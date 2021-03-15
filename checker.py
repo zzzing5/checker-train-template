@@ -22,9 +22,8 @@ def check(host):
         r = requests.get(f'http://{host}:8080/')
     except:
         die(ExitStatus.DOWN,"DOWN")
-    #print("************ r = ", r)
     t = r.status_code
-    _log(t)
+    #_log(t)
     if t == 200:
         die(ExitStatus.OK, "OK")
     else:
@@ -39,16 +38,16 @@ def put(host, flag_id, flag, vuln):
      'username': login,
      'password': password,
 })
-    _log(r.text)
+    #_log(r.text)
     r = s.post(f'http://{host}:8080/auth', {
      'username': login,
      'password': password,
 })
-    _log(r.text)
+    #_log(r.text)
     r = s.post(f'http://{host}:8080/addRecipe', {
     'recipe': flag,
     })
-    _log(r.text)
+    #_log(r.text)
     if flag not in r.text:
         die(ExitStatus.MUMBLE, "MUMBLE: Не нашел флаг после сохранения")
     print(f'{login}:{password}')
@@ -62,9 +61,9 @@ def get(host, flag_id, flag, vuln):
      'username': username,
      'password': password,
 })
-    _log(r.text)
+    #_log(r.text)
     r = s.get(f'http://{host}:8080/recipes')
-    _log(r.text)
+    #_log(r.text)
     if flag not in r.text:
         die(ExitStatus.CORRUPT, "CORRUPT: Нет флага в рецептах")
     else:
