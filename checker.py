@@ -49,9 +49,11 @@ def put(host, flag_id, flag, vuln):
     })
     #_log(r.text)
     if flag not in r.text:
-        die(ExitStatus.MUMBLE, "MUMBLE: Не нашел флаг после сохранения")
+        die(ExitStatus.MUMBLE, "MUMBLE: No flag found after saving")
     print(f'{login}:{password}')
     die(ExitStatus.OK, "OK")
+
+
 
 
 def get(host, flag_id, flag, vuln):
@@ -65,9 +67,18 @@ def get(host, flag_id, flag, vuln):
     r = s.get(f'http://{host}:8080/recipes')
     #_log(r.text)
     if flag not in r.text:
-        die(ExitStatus.CORRUPT, "CORRUPT: Нет флага в рецептах")
+        die(ExitStatus.CORRUPT, "CORRUPT: No flag in recipes")
     else:
         die(ExitStatus.OK, "OK")
+
+
+
+
+
+
+
+
+
 
 #""" <common> """
 
