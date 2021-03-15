@@ -46,7 +46,7 @@ def put(host, flag_id, flag, vuln):
      'username': login,
      'password': password,
 })
-    _log(t.text)
+    #_log(t.text)
     r = s.post(f'http://{host}:8080/addRecipe', {
     'recipe': flag,
     })
@@ -55,7 +55,7 @@ def put(host, flag_id, flag, vuln):
     if flag not in r.text:
         die(ExitStatus.MUMBLE, "MUMBLE: No flag found after saving")
     
-    #tegs = "<p>"+f'{login}'+"</p>"
+    #tegs = "    <p>"+f'{login}'+"</p>"
     
     #if tegs not in t.text:
     #    _log("NOT")
