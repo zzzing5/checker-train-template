@@ -19,7 +19,7 @@ TRACE = os.getenv("TRACE", False)
 
 def check(host):
     try:
-        r = requests.get(f'http://{host}:8080/')
+        r = requests.get(f'http://{host}:8080/', timeout = 5)
     except:
         die(ExitStatus.DOWN,"DOWN")
     t = r.status_code
@@ -34,23 +34,32 @@ def put(host, flag_id, flag, vuln):
     login = uuid.uuid4()
     password = "12345"
     s = requests.Session()
-    r = s.post(f'http://{host}:8080/signup', {
+    try:
+        r = s.post(f'http://{host}:8080/signup', {
+        'username': login,
+        'password': password,
+    }, timeout = 5)
+    #_log(r.text)
+    except:
+        die(ExitStatus.DOWN,"DOWN")
+    t = s.post(f'http://{host}:8080/auth', {
      'username': login,
      'password': password,
 })
-    #_log(r.text)
-    r = s.post(f'http://{host}:8080/auth', {
-     'username': login,
-     'password': password,
-})
-    #_log(r.text)
+    _log(t.text)
     r = s.post(f'http://{host}:8080/addRecipe', {
     'recipe': flag,
     })
     #_log(r.text)
+     
     if flag not in r.text:
         die(ExitStatus.MUMBLE, "MUMBLE: No flag found after saving")
-    print(f'{login}:{password}')
+    
+    #tegs = "<p>"+f'{login}'+"</p>"
+    
+    #if tegs not in t.text:
+    #    _log("NOT")
+    #print(f'{login}:{password}')
     die(ExitStatus.OK, "OK")
 
 
@@ -59,10 +68,13 @@ def put(host, flag_id, flag, vuln):
 def get(host, flag_id, flag, vuln):
     s = requests.Session()
     username, password = flag_id.split(":")
-    r = s.post(f'http://{host}:8080/auth', {
-     'username': username,
-     'password': password,
-})
+    try:
+        r = s.post(f'http://{host}:8080/auth', {
+        'username': username,
+        'password': password,
+    }, timeout = 5)
+    except:
+        die(ExitStatus.DOWN,"DOWN")
     #_log(r.text)
     r = s.get(f'http://{host}:8080/recipes')
     #_log(r.text)
